@@ -1,0 +1,73 @@
+[gd_scene load_steps=12 format=3 uid="uid://cb10a4426tqhc"]
+
+[ext_resource type="Script" path="res://components/player/player.gd" id="1_6qqi0"]
+[ext_resource type="Texture2D" uid="uid://beqooj58ysljs" path="res://art/jelly-mob.png" id="1_le1e6"]
+[ext_resource type="PackedScene" uid="uid://dssggbd45f6vm" path="res://components/DamageReciever.tscn" id="3_7ljwb"]
+[ext_resource type="PackedScene" uid="uid://bcvnfvfkr1mcw" path="res://components/HealthSystem.tscn" id="4_j2odp"]
+[ext_resource type="PackedScene" uid="uid://duvs1g6npil5r" path="res://components/weapons/WeaponsSystem.tscn" id="5_tq4mn"]
+[ext_resource type="PackedScene" uid="uid://bh1q4cglo77jg" path="res://components/weapons/bow.tscn" id="6_io3hd"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5q2l7"]
+atlas = ExtResource("1_le1e6")
+region = Rect2(0, 0, 51, 31)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sjwbn"]
+atlas = ExtResource("1_le1e6")
+region = Rect2(52, 0, 51, 31)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q4p2a"]
+atlas = ExtResource("1_le1e6")
+region = Rect2(104, 0, 51, 31)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_uimwy"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5q2l7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sjwbn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q4p2a")
+}],
+"loop": true,
+"name": &"move",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_f2ubg"]
+radius = 13.5
+height = 37.0
+
+[node name="Player" type="Area2D"]
+position = Vector2(35, 40)
+script = ExtResource("1_6qqi0")
+metadata/_edit_group_ = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+modulate = Color(0.223529, 0.737255, 1, 1)
+sprite_frames = SubResource("SpriteFrames_uimwy")
+animation = &"move"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, -0.5)
+rotation = -1.57079
+shape = SubResource("CapsuleShape2D_f2ubg")
+
+[node name="DamageReciever" parent="." node_paths=PackedStringArray("collider", "health_system") instance=ExtResource("3_7ljwb")]
+collider = NodePath("..")
+health_system = NodePath("../HealthSystem")
+hurt_by = Array[String](["enemy"])
+
+[node name="HealthSystem" parent="." instance=ExtResource("4_j2odp")]
+max_health = 3.0
+
+[node name="WeaponsSystem" parent="." node_paths=PackedStringArray("weapons") instance=ExtResource("5_tq4mn")]
+weapons = [NodePath("../bow")]
+
+[node name="bow" parent="." instance=ExtResource("6_io3hd")]
+position = Vector2(23, 2)
+
+[connection signal="body_entered" from="." to="DamageReciever" method="_on_body_entered"]
+[connection signal="died" from="HealthSystem" to="." method="_on_died"]

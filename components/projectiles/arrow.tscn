@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://5jeqs1q05eqf"]
+
+[ext_resource type="Texture2D" uid="uid://ri5w4btdq1g8" path="res://art/arrow.png" id="1_bfr2e"]
+[ext_resource type="Script" path="res://components/projectiles/projectile.gd" id="1_stlso"]
+[ext_resource type="Script" path="res://components/DamageProvider.gd" id="3_iyj8g"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5pl83"]
+size = Vector2(3, 33)
+
+[node name="arrow" type="Area2D"]
+script = ExtResource("1_stlso")
+speed = 600.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+rotation = 1.5708
+texture = ExtResource("1_bfr2e")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+rotation = 1.5708
+shape = SubResource("RectangleShape2D_5pl83")
+
+[node name="DamageProvider" type="Node" parent="."]
+script = ExtResource("3_iyj8g")
+type = "projectile"
+min_damage = 1.0

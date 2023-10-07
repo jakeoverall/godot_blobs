@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://duvs1g6npil5r"]
+
+[ext_resource type="Script" path="res://components/weapons/weapons_system.gd" id="1_wscm3"]
+
+[node name="WeaponsSystem" type="Node"]
+script = ExtResource("1_wscm3")
+
+[node name="cdTimer" type="Timer" parent="."]

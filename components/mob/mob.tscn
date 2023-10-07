@@ -1,0 +1,66 @@
+[gd_scene load_steps=11 format=3 uid="uid://bm3nhc5r0dqr2"]
+
+[ext_resource type="Script" path="res://components/mob/mob.gd" id="1_35nhn"]
+[ext_resource type="Texture2D" uid="uid://beqooj58ysljs" path="res://art/jelly-mob.png" id="1_gjvqm"]
+[ext_resource type="PackedScene" uid="uid://bcvnfvfkr1mcw" path="res://components/HealthSystem.tscn" id="3_x45l0"]
+[ext_resource type="PackedScene" uid="uid://dssggbd45f6vm" path="res://components/DamageReciever.tscn" id="4_tk7co"]
+[ext_resource type="PackedScene" uid="uid://djsniyde1wfcb" path="res://components/DamageProvider.tscn" id="5_5nklq"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kmy8p"]
+atlas = ExtResource("1_gjvqm")
+region = Rect2(0, 0, 51, 31)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3dhjo"]
+atlas = ExtResource("1_gjvqm")
+region = Rect2(52, 0, 51, 31)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g1m6d"]
+atlas = ExtResource("1_gjvqm")
+region = Rect2(104, 0, 51, 31)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_i8eg1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kmy8p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3dhjo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g1m6d")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ftarr"]
+radius = 14.5
+height = 42.0
+
+[node name="mob" type="CharacterBody2D"]
+position = Vector2(100, 82)
+script = ExtResource("1_35nhn")
+minSpeed = 100.0
+maxSpeed = 150.0
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_i8eg1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0.5)
+rotation = -1.57079
+shape = SubResource("CapsuleShape2D_ftarr")
+debug_color = Color(0.843137, 0.309804, 0.560784, 0.419608)
+
+[node name="DamageProvider" parent="." instance=ExtResource("5_5nklq")]
+min_damage = 1.0
+
+[node name="DamageReciever" parent="." node_paths=PackedStringArray("health_system") instance=ExtResource("4_tk7co")]
+health_system = NodePath("../HealthSystem")
+hurt_by = Array[String](["projectile"])
+
+[node name="HealthSystem" parent="." instance=ExtResource("3_x45l0")]
+
+[connection signal="died" from="." to="." method="_on_died"]
